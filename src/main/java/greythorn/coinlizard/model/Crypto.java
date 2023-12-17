@@ -22,4 +22,6 @@ public class Crypto {
 
     @Column(name = "symbol", nullable = false, unique = true)
     private String symbol;
+
+    private String image;
 }

@@ -61,7 +61,7 @@ public class CryptoControllerTest {
 
         given(cryptoService.getAllCoinDetails()).willReturn(allCoins);
 
-        mockMvc.perform(get("/api/price-data/all-coins")
+        mockMvc.perform(get("/api/crypto/all-coins")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(allCoins.size())))

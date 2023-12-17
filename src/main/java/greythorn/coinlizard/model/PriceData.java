@@ -26,10 +26,22 @@ public class PriceData {
     private Crypto crypto;
 
     private Date date;
+
+    @Column(precision = 20, scale = 4)
     private BigDecimal high;
+
+    @Column(precision = 20, scale = 4)
     private BigDecimal low;
+
+    @Column(precision = 20, scale = 4)
     private BigDecimal open;
+
+    @Column(precision = 20, scale = 4)
     private BigDecimal close;
+
+    @Column(precision = 20, scale = 4)
     private Long volume;
+
+    @Column(precision = 20, scale = 4)
     private Long marketcap;
 }
