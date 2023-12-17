@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/crypto")
@@ -38,5 +39,11 @@ public class CryptoController {
     public ResponseEntity<Optional<PriceData>> get24h(@PathVariable String symbol) {
         Optional<PriceData> priceData = cryptoService.get24h(symbol);
         return ResponseEntity.ok(priceData);
+    }
+
+    @GetMapping("/coin/{id}")
+    public ResponseEntity<Optional<CoinDetailsResponse>> getOneCoin(@PathVariable UUID id) {
+        Optional<CoinDetailsResponse> coin = cryptoService.getCoinById(id);
+        return ResponseEntity.ok(coin);
     }
 }

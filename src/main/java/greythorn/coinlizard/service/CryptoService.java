@@ -10,10 +10,7 @@ import greythorn.coinlizard.dto.CoinDetailsResponse;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +27,30 @@ public class CryptoService {
     public Optional<PriceData> get24h(String symbol){
         Crypto crypto = cryptoRepository.findBySymbol(symbol);
         return priceDataRepository.findPriceDataRelativeToLatest(crypto, 24);
+    }
+
+    public Optional<CoinDetailsResponse> getCoinById(UUID id){
+        Optional<Crypto> cryptoOptional =  cryptoRepository.findById(id);
+        if (cryptoOptional.isPresent()) {
+            Crypto crypto = cryptoOptional.get();
+            Optional<PriceData> latestPriceDataOptional = priceDataRepository.findTopByCryptoOrderByDateDesc(crypto);
+            if (latestPriceDataOptional.isPresent()) {
+                PriceData latestpriceData = latestPriceDataOptional.get();
+                return Optional.of(new CoinDetailsResponse(
+                        crypto.getId(),
+                        crypto.getName(),
+                        crypto.getImage(),
+                        crypto.getSymbol(),
+                        latestpriceData.getClose(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        latestpriceData.getMarketcap()
+                ));
+            }
+        }
+        return null;
     }
 
     public List<CoinDetailsResponse> getAllCoinDetails() {
