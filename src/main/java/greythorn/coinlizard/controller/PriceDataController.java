@@ -28,7 +28,7 @@ public class PriceDataController {
     public ResponseEntity<Map<String, Object>> getCoinPriceChart(
             @PathVariable UUID id,
             @PathVariable int days) {
-        // Assuming you have a method to retrieve the Crypto object using the id
+        // Assuming you have a method to retrieve the Crypto object using the id (test)
         Optional<CoinDetailsResponse> coinDetailsResponseOptional = cryptoService.getCoinById(id);
         List<PriceChartResponse> priceChart = null;
         if (coinDetailsResponseOptional.isPresent()) {
