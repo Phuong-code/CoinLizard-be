@@ -1,4 +1,6 @@
 FROM openjdk:21-jdk
+RUN mkdir /app
+COPY app.jar /app/app.jar
 WORKDIR /app
-COPY target/coinlizard-0.0.1.jar coinlizard-0.0.1.jar
-ENTRYPOINT ["java","-jar","coinlizard-0.0.1.jar"]
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
