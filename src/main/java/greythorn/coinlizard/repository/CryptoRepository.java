@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 @Repository
 public interface CryptoRepository extends JpaRepository<Crypto, UUID> {
-
-    Crypto findBySymbol(String symbol);
 }

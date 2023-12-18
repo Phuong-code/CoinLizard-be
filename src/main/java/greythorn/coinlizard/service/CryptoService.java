@@ -20,15 +20,12 @@ public class CryptoService {
     @Autowired
     private PriceDataRepository priceDataRepository;
 
-    public List<Crypto> getAllCoins(){
-        return cryptoRepository.findAll();
-    }
-
-    public Optional<PriceData> get24h(String symbol){
-        Crypto crypto = cryptoRepository.findBySymbol(symbol);
-        return priceDataRepository.findPriceDataRelativeToLatest(crypto, 24);
-    }
-
+    /**
+     * Retrieves details of a cryptocurrency by its ID.
+     *
+     * @param id The UUID of the cryptocurrency.
+     * @return An Optional containing CoinDetailsResponse if the crypto is found.
+     */
     public Optional<CoinDetailsResponse> getCoinById(UUID id){
         Optional<Crypto> cryptoOptional =  cryptoRepository.findById(id);
         if (cryptoOptional.isPresent()) {
@@ -53,12 +50,17 @@ public class CryptoService {
         return null;
     }
 
+    /**
+     * Retrieves details of all cryptocurrencies.
+     *
+     * @return A list of CoinDetailsResponse containing details of all cryptocurrencies.
+     */
     public List<CoinDetailsResponse> getAllCoinDetails() {
         return cryptoRepository.findAll().stream().map(crypto -> {
             Optional<PriceData> latestPriceDataOptional = priceDataRepository.findTopByCryptoOrderByDateDesc(crypto);
 
             if (latestPriceDataOptional.isEmpty()) {
-                // Handle the case when there's no price data available
+                // Return basic details when there's no price data available
                 return new CoinDetailsResponse(
                         crypto.getId(),
                         crypto.getName(),
@@ -75,6 +77,7 @@ public class CryptoService {
 
             PriceData latestPriceData = latestPriceDataOptional.get();
             BigDecimal currentPrice = latestPriceData.getClose();
+            // Calculate price changes over different intervals
             BigDecimal priceChange24h = calculatePriceChange(crypto, 24);
             BigDecimal priceChange7d = calculatePriceChange(crypto, 7 * 24);
             BigDecimal priceChange30d = calculatePriceChange(crypto, 30 * 24);
@@ -97,6 +100,13 @@ public class CryptoService {
         .collect(Collectors.toList());
     }
 
+    /**
+     * Calculates the price change of a cryptocurrency from a specified time in the past to the present.
+     *
+     * @param crypto The crypto entity for which the price change is to be calculated.
+     * @param hoursBack The number of hours back from the current time to calculate the price change.
+     * @return A BigDecimal representing the percentage change in price, or null if not calculable.
+     */
     private BigDecimal calculatePriceChange(Crypto crypto, int hoursBack) {
 
         Optional<PriceData> pastPriceDataOptional = priceDataRepository.findPriceDataRelativeToLatest(crypto, hoursBack);
@@ -107,9 +117,9 @@ public class CryptoService {
 
             if (latestPriceDataOptional.isPresent()) {
                 PriceData latestPriceData = latestPriceDataOptional.get();
+                // Calculating the percentage change in price
                 BigDecimal pastPrice = pastPriceData.getClose();
                 BigDecimal latestPrice = latestPriceData.getClose();
-
                 if (pastPrice.compareTo(BigDecimal.ZERO) > 0) {
                     return latestPrice.subtract(pastPrice)
                             .divide(pastPrice,4, RoundingMode.DOWN)

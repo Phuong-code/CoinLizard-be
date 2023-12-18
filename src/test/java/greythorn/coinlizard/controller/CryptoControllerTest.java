@@ -19,9 +19,6 @@ import java.util.UUID;
 import static org.mockito.BDDMockito.given;
 import static org.hamcrest.Matchers.*;
 
-
-
-
 @WebMvcTest(CryptoController.class)
 public class CryptoControllerTest {
     @Autowired
