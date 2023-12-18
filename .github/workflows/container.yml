@@ -11,6 +11,18 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Build with Maven
+        run: |
+             mvn clean install
+             mkdir artifacts && cp target/*.jar artifacts
+             cd artifacts && ls
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: github-action-artifact
+          path: artifacts
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
